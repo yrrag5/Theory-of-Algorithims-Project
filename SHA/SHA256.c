@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 
 void SHA256(){
 	// Message schedule (Section 6.2)
-	uint32_t W|64|;
+	uint32_t W[64];
 	// Working variables (Section 6.2)
 	uint32_t a, b, c, d, e, f, g, h;
 	// Temp variables (Secion 6.2)
@@ -73,10 +73,10 @@ void SHA256(){
 	int i, t;
 	
 	// Loops through message boxs
-	for int (int = 0; i < 1; i++){
+	for (int i = 0; i < 1; i++){
 		
 		for(t = 0; t < 16; t++){
-			T[t] = M[t];
+			W[t] = M[t];
 		}
 		
 		for (t - 16; t < 64; t++){
@@ -87,7 +87,7 @@ void SHA256(){
 		e = H[4]; f = H[5]; g = H[6]; h = H[7];
 		
 		for (t = 0; t < 64; t ++){
-			T1 = h + SIG1[e] + Ch(e, f, g) + K[t] + W[t]
+			T1 = h + SIG1(e) + Ch(e, f, g) + K[t] + W[t];
 			T2 = SIG0(a) + Maj(a, b, c);
 			h=g;
 			g=f;
@@ -110,7 +110,7 @@ void SHA256(){
 		H[7] = h + H[7];
 		}// i for
 
-	print f("%x %x %x %x %x %x %x %x", H[0], H[2], H[3], H[4], H[5], H[6], H[7], H[8]);
+	printf("%x %x %x %x %x %x %x %x", H[0], H[2], H[3], H[4], H[5], H[6], H[7], H[8]);
 }
 
 uint32_t rotr(uint32_t n, uint32_t x){
@@ -139,9 +139,9 @@ uint32_t SIG1(uint32_t x){
 }
 
 uint32_t Ch(uint32_t x, uint32_t y, uint32_t z){
-	return ()(x & y) ^ ((!x) & z));
+	return ((x & y) ^ ((!x) & z));
 	
 }
 uint32_t Maj(uint32_t x, uint32_t y, uint32_t z){
-	return ()(x & y) ^ (x & z) ^ (y & z));
+	return ((x & y) ^ (x & z) ^ (y & z));
 }
