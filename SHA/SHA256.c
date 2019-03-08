@@ -80,10 +80,10 @@ void SHA256(){
 		}
 		
 		for (t - 16; t < 64; t++){
-			W[t] = sigl(W[t-2]) + W[t-7] + sig0(W[t-15]) + W[t-16];
+			W[t] = sig1(W[t-2]) + W[t-7] + sig0(W[t-15]) + W[t-16];
 		}		
 		
-		a = H[0]; b = H[1]; C = H[2]; d = H[3]; 
+		a = H[0]; b = H[1]; c = H[2]; d = H[3]; 
 		e = H[4]; f = H[5]; g = H[6]; h = H[7];
 		
 		for (t = 0; t < 64; t ++){
