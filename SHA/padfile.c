@@ -14,8 +14,8 @@ int main(int argc, char *argv[]) {
 
     union msgblock M;
 
+	
     uint64_t nobits = 0;
-
 	// Message block 
     uint64_t nobytes;
 
@@ -25,12 +25,26 @@ int main(int argc, char *argv[]) {
 	
 	while (!feof(f)) {
 		nobytes = fread(M.e, 1, 64, f);
-		printf("%llu\n", nobytes)
-	}// while
-	
+		printf("Read %211u bytes\n", nobytes);
+		nobits = nobits + (nobytes * 8);
+		if (nobytes < 56) {
+			printf("I've found a block with less than 55 bytes.\n");
+			M.e[nobytes] = 0x80;
+			
+			while (nobytes < 56) {
+				nobytes = nobytes + 1;
+				// Setting bites to 0
+				M.e[nobytes] = 0x00;
+			}
+			M.s[7] = nobits;
+		}
+	}//while
+
 	fclose(f);
+	
+	for(int i = 0; i < 64; i++){
+		printf("%x", M.e[i]);
+		printf("\n");
+	}
     return 0;
-
-
-    }
 }
