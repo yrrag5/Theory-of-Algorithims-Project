@@ -1,17 +1,18 @@
-// Author: Garry Cummins
+// Author: Garry Cummins - G00335806
 // Theory of Algorithms Project 
 
+// Imports for header file input output and bit length integers
 #include <stdio.h>
 #include <stdint.h>
 
 
-// Represents message block
+// Represents message block that accesses e, t, s integers
 union msgblock {
-	//8
+	//8 bit integer 
     uint8_t  e[64];
-	//32
+	//32 bit integer
     uint32_t t[16];
-	//64
+	//64 bit integer
     uint64_t  s[8];
 };
 
@@ -21,7 +22,7 @@ enum status {READ, PAD0, PAD1, FINISH};
 void SHA256(FILE *f);
 
 
-
+// Hashing functions
 uint32_t sig0(uint32_t x);
 uint32_t sig1(uint32_t x);
 
@@ -53,13 +54,15 @@ uint32_t Maj(uint32_t x, uint32_t y, uint32_t z);
 | (((x) & 0x00000000000000ff) << 56))*/
 
 
-
+// Reads in message block 
 int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits);
 
 int main(int argc, char *argv[]){
+	// Opens file to use
 	FILE* msgf;
     msgf = fopen(argv[1], "r");
 	
+	// File checking 
 	if (msgf == NULL) {
         printf("Incorrect file name used\n");
     }
@@ -76,16 +79,16 @@ int main(int argc, char *argv[]){
 //int nextmsgblock();
 
 void SHA256(FILE * msgf){
-	
+	//Gets the current message block 
 	union msgblock M;
-		
+	// Number of bits read from a file 
     uint64_t nobits = 0;
 	// Message block 
     uint64_t nobytes;
-
+	// Padding status of the message block 
 	enum status S = READ;
 	
-	// K constants 
+	// K constants hash values 
 	uint32_t K[] = {
 		 0x428a2f98 ,0x71374491 ,0xb5c0fbcf ,0xe9b5dba5
 		,0x3956c25b ,0x59f111f1 ,0x923f82a4 ,0xab1c5ed5
@@ -111,7 +114,7 @@ void SHA256(FILE * msgf){
 	// Temp variables 
 	uint32_t T1, T2;
 	
-	// Intialising H constants
+	// Intialising H constants hash values
 	uint32_t H[8] = {
 		0x6a09e667,
 		0xbb67ae85,
@@ -123,6 +126,7 @@ void SHA256(FILE * msgf){
 		0x5be0cd19
 	};
 	
+	// Loop variables 
 	int i, j;
 	
 	// Loops through message blocks
@@ -136,9 +140,11 @@ void SHA256(FILE * msgf){
 			W[j] = sig1(W[j-2]) + W[j-7] + sig0(W[j-15]) + W[j-16];
 		}		
 		
+		// Intialised variables
 		a = H[0]; b = H[1]; c = H[2]; d = H[3]; 
 		e = H[4]; f = H[5]; g = H[6]; h = H[7];
 		
+		// Step 3
 		for (j = 0; j < 64; j ++){
 			T1 = h + SIG1(e) + Ch(e, f, g) + K[j] + W[j];
 			T2 = SIG0(a) + Maj(a, b, c);
@@ -168,34 +174,41 @@ void SHA256(FILE * msgf){
 
 
 int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits){
-	
 		
-	// Message block 
+	// Message block with the current number of bytes 
     uint64_t nobytes;
 	
+	// Loop variable
 	int i;
 	
+	// If message blocks are finished, the S should finish
 	if(*S == FINISH){
 		return 0;
 	}
-	
+	// Checks blocks of padding if not finished 
 	if(*S == PAD0 || *S == PAD1){
+		// Sets first 56 bits to zero bits
 		for (i = 0; i < 56; i++){
 			M->e[i] = 0X00;
 			M->s[7] = *nobits;
 			*S = FINISH;
 		}
+		//Big-endian not working
+		// last 64 bit set to the number of bits in the file 
 		if (*S == PAD1){
 		M->e[0] = 0x80;
 		}
+		// Gives another iteration to the loop
 		return 1;
 	}// if
 	
-	
+	// File isnt read fully
 	nobytes = fread(M->e, 1, 64, msgf);
 
+	// Checks number of bytes read in
 	*nobits = *nobits + (nobytes * 8);
 	
+	// If 56 bytes are read, padding can be put in the message block 
 	if (nobytes < 56) {
 		M->e[nobytes] = 0x80;
 		
@@ -205,8 +218,10 @@ int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits
 			M->e[nobytes] = 0x00;
 		}
 		M->s[7] = *nobits;
+		// Finished 
 		*S = FINISH;
 	}
+	// Checks if the message block can be padded 
 	else if (nobytes < 64){
 		*S = PAD0;
 		M->e[nobytes] = 0x80;
@@ -215,12 +230,16 @@ int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits
 			M->e[nobytes] = 0x00;
 		}
 	}// else if
+	// Checks if at the end of file
 	else if (feof(msgf)){
+		// Status changed to PAD1 to add another message block with padding 
 		*S = PAD1;
 	}	
+	// 1 called again 
     return 1;
 }
 
+// Functions for hash 
 uint32_t rotr(uint32_t n, uint32_t x){
 	return(x >> n) | (x << (32 - n));
 }
@@ -253,3 +272,7 @@ uint32_t Ch(uint32_t x, uint32_t y, uint32_t z){
 uint32_t Maj(uint32_t x, uint32_t y, uint32_t z){
 	return ((x & y) ^ (x & z) ^ (y & z));
 }
+
+//int checkEndian() {
+	
+//}

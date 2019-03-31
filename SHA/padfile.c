@@ -1,4 +1,4 @@
-// Author: Garry Cummins
+// Author: Garry Cummins - G00335806
 // Theory of Algorithms Project 
 #include <stdio.h>
 #include <stdint.h>
@@ -13,13 +13,13 @@ union msgblock {
     uint64_t  s[8];
 };
 
-// A flag used for reading 
+// A flag used for reading and tracking the message
 enum status {READ, PAD0, PAD1, FINISH};
 
 int main(int argc, char *argv[]) {
 
     union msgblock M;
-		
+	// Appends message block
     uint64_t nobits = 0;
 	// Message block 
     uint64_t nobytes;
