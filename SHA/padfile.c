@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// Represents message block
 union msgblock {
 	//8
     uint8_t  e[64];
@@ -12,7 +13,9 @@ union msgblock {
     uint64_t  s[8];
 };
 
-enum status {READ, PAD0, PAD1, FINISH}
+// A flag used for reading 
+enum status {READ, PAD0, PAD1, FINISH};
+
 int main(int argc, char *argv[]) {
 
     union msgblock M;
@@ -30,7 +33,9 @@ int main(int argc, char *argv[]) {
 	
 	while (S == READ) {
 		nobytes = fread(M.e, 1, 64, f);
+		printf("Read %2llu bytes \n", nobytes);
 		nobits = nobits + (nobytes * 8);
+		
 		if (nobytes < 56) {
 			printf("I've found a block with less than 55 bytes.\n");
 			M.e[nobytes] = 0x80;
