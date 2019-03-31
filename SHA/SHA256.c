@@ -104,7 +104,7 @@ void SHA256(FILE * msgf){
 		0x5be0cd19
 	};
 	
-	int i, t;
+	int i, j;
 	
 	// Loops through message boxs
 	while (nextmsgblock(msgf, &M, &S, &nobits)){
