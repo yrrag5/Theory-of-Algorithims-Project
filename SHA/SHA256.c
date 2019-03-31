@@ -54,7 +54,7 @@ uint32_t Maj(uint32_t x, uint32_t y, uint32_t z);
 
 
 
-//int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits);
+int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits);
 
 int main(int argc, char *argv[]){
 	FILE* msgf;
