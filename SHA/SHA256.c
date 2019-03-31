@@ -120,7 +120,7 @@ void SHA256(FILE * msgf){
 		a = H[0]; b = H[1]; c = H[2]; d = H[3]; 
 		e = H[4]; f = H[5]; g = H[6]; h = H[7];
 		
-		for (t = 0; t < 64; t ++){
+		for (j = 0; j < 64; j ++){
 			T1 = h + SIG1(e) + Ch(e, f, g) + K[t] + W[t];
 			T2 = SIG0(a) + Maj(a, b, c);
 			h = g;
