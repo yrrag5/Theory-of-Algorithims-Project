@@ -113,7 +113,7 @@ void SHA256(FILE * msgf){
 			W[j] = M.t[j];
 		}
 		
-		for (t - 16; t < 64; t++){
+		for (j - 16; j < 64; j++){
 			W[j] = sig1(W[j-2]) + W[j-7] + sig0(W[j-15]) + W[j-16];
 		}		
 		
