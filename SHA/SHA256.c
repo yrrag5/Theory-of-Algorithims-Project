@@ -109,7 +109,7 @@ void SHA256(FILE * msgf){
 	// Loops through message boxs
 	while (nextmsgblock(msgf, &M, &S, &nobits)){
 		
-		for(j = 0; j < 16; j++){
+		for(int j = 0; j < 16; j++){
 			W[j] = M.t[j];
 		}
 		
@@ -180,7 +180,7 @@ uint32_t Maj(uint32_t x, uint32_t y, uint32_t z){
 	return ((x & y) ^ (x & z) ^ (y & z));
 }
 
-int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, int *nobits){
+int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits){
 	
 		
 	// Message block 
