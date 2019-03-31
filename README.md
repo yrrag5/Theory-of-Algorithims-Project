@@ -22,9 +22,13 @@ followed by running it using :
 
 A file will then need to be selected in order to test. file.txt can be used in this case located with the c files:
 
-### SHA256 file.txt
+### ./SHA256 file.txt
 
 This should output the checksum of the file.
+
+### Output 
+
+a8d443b5 3f2b7ee8 44a20e28 ac98e808 547b81b3 fe2843a be207811 3880a3cc
 
 
 
