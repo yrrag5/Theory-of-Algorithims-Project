@@ -18,7 +18,7 @@ union msgblock {
 // A flag used for reading the file 
 enum status {READ, PAD0, PAD1, FINISH};
 
-void SHA256(FILE msgf);
+void SHA256(FILE *f);
 
 
 
@@ -36,13 +36,13 @@ uint32_t Maj(uint32_t x, uint32_t y, uint32_t z);
 
 
 
-int nextmsgblock(FILE *f, union msgblock *M, enum status *S, uint64_t *nobits);
+int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, uint64_t *nobits);
 
 int main(int argc, char *argv[]){
 	FILE* msgf;
     msgf = fopen(argv[1], "r");
 	
-	if (file == NULL) {
+	if (msgf == NULL) {
         printf("Incorrect file name used\n");
     }
 	
@@ -195,7 +195,7 @@ int nextmsgblock(FILE *msgf, union msgblock *M, enum status *S, int *nobits){
 	if(*S == PAD0 || *S == PAD1){
 		for (i = 0; i < 56; i++){
 			M->e[i] = 0X00;
-			M->s[7] = nobits;
+			M->s[7] = *nobits;
 			*S = FINISH;
 		}
 		if (*S == PAD1){
