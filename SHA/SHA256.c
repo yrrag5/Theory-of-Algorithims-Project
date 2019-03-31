@@ -18,6 +18,9 @@ union msgblock {
 // A flag used for reading the file 
 enum status {READ, PAD0, PAD1, FINISH};
 
+void SHA256(FILE msgf);
+
+
 
 uint32_t sig0(uint32_t x);
 uint32_t sig1(uint32_t x);
@@ -31,7 +34,6 @@ uint32_t SIG1(uint32_t x);
 uint32_t Ch(uint32_t x, uint32_t y, uint32_t z);
 uint32_t Maj(uint32_t x, uint32_t y, uint32_t z);
 
-void SHA256(FILE msgf);
 
 
 int nextmsgblock(FILE *f, union msgblock *M, enum status *S, uint64_t *nobits);
@@ -40,16 +42,21 @@ int main(int argc, char *argv[]){
 	FILE* msgf;
     msgf = fopen(argv[1], "r");
 	
-	SHA256(msgf);
+	if (file == NULL) {
+        printf("Incorrect file name used\n");
+    }
 	
-	fclose(msgf);
+	else{
+		SHA256(msgf);
+		fclose(msgf);
+	}
 
 	return 0;
 }
 
 int nextmsgblock();
 
-void SHA256(FILE * f){
+void SHA256(FILE * msgf){
 	
 	union msgblock M;
 		
@@ -78,11 +85,11 @@ void SHA256(FILE * f){
 		,0x748f82ee ,0x78a5636f ,0x84c87814 ,0x8cc70208
 		,0x90befffa ,0xa4506ceb ,0xbef9a3f7 ,0xc67178f2
 	};
-	// Message schedule (Section 6.2)
+	// Message schedule 
 	uint32_t W[64];
-	// Working variables (Section 6.2)
+	// Working variables 
 	uint32_t a, b, c, d, e, f, g, h;
-	// Temp variables (Secion 6.2)
+	// Temp variables 
 	uint32_t T1, T2;
 	
 	// Intialising H constants
@@ -102,12 +109,12 @@ void SHA256(FILE * f){
 	// Loops through message boxs
 	while (nextmsgblock(msgf, &M, &S, &nobits)){
 		
-		for(t = 0; t < 16; t++){
-			W[t] = M.t[t];
+		for(j = 0; j < 16; j++){
+			W[j] = M.t[j];
 		}
 		
 		for (t - 16; t < 64; t++){
-			W[t] = sig1(W[t-2]) + W[t-7] + sig0(W[t-15]) + W[t-16];
+			W[j] = sig1(W[j-2]) + W[j-7] + sig0(W[j-15]) + W[j-16];
 		}		
 		
 		a = H[0]; b = H[1]; c = H[2]; d = H[3]; 
@@ -116,14 +123,14 @@ void SHA256(FILE * f){
 		for (t = 0; t < 64; t ++){
 			T1 = h + SIG1(e) + Ch(e, f, g) + K[t] + W[t];
 			T2 = SIG0(a) + Maj(a, b, c);
-			h=g;
-			g=f;
-			f=e;
-			e=d+T1;
-			d=c;
-			c=b;
-			b=a;
-			a=T1+T2;
+			h = g;
+			g = f;
+			f = e;
+			e = d + T1;
+			d = c;
+			c = b;
+			b = a;
+			a = T1+T2;
 		}
 		
 		// Step 4
